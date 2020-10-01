@@ -1,6 +1,3 @@
-# BlazorNotificationTemplate
-Blazor Notification from servir to client by api use SignalR
-
 1)	Создать приложение Blazor
  
 
@@ -55,6 +52,7 @@ Blazor Notification from servir to client by api use SignalR
 
 3)	В Api установить пакет Microsoft.AspNetCore.SignalR
 4)	В Api добавить класс
+```C#
 public class NotificationHub:Hub
     {
         public override Task OnConnectedAsync()
@@ -62,9 +60,10 @@ public class NotificationHub:Hub
             return base.OnConnectedAsync();
         }
     }
-
+```
 5)	правим файл Startup.cs проекта Api
 а) дописать в ConfigureServices
+```C#
 services.AddCors(
                 o =>
                 {
@@ -74,8 +73,9 @@ services.AddCors(
                     });
                 });
 services.AddSignalR();
-
+```
 б) дописать в Configure
+```C#
 app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
@@ -83,7 +83,7 @@ app.UseCors("CorsPolicy");
                 endpoints.MapHub<NotificationHub>("/notificationhub");
                 endpoints.MapControllers();
             });
-
+```
 
 
 
@@ -99,7 +99,7 @@ app.UseCors("CorsPolicy");
 
 
 6)	В проект Shared добавить класс и enum
-
+```C#
 public class NotifiMessage
     {
         public string Title { get; set; }
@@ -118,11 +118,11 @@ public class NotifiMessage
         Warning,
         Error
     }
-
+```
 7)	В проект с Api добавить пустой контроллер Api
  
 Листинг
-    
+```C# 
     [Route("api/[controller]")]
     [ApiController]
     public class NotificationsController : ControllerBase
@@ -195,17 +195,16 @@ public class NotifiMessage
 
         }
     }
-
+```
 8)	В Client установить пакет - Microsoft.AspNetCore.SignalR.Client не путать с Microsoft.AspNet.SignalR.Client
 9)	В свойствах проекта Api взять адрес подключения - у меня это https://localhost:44303/
  
 
 10)	В клиент добавить листинг в файл index.razor
-
-
+```C#
 @page "/"
 @using Microsoft.Extensions.Logging
-@using BazorNotificationTemplate.Shared
+@using BlazorNotificationTemplate.Shared
 @using Microsoft.AspNetCore.SignalR.Client
 @inject HttpClient client
 @inject ILogger<Index> Logger
@@ -274,6 +273,7 @@ public class NotifiMessage
     #endregion
 
 }
+```
 11)	Правой кнопкой на решении – назначить запускаемые проекты
  
 
@@ -289,8 +289,9 @@ public class NotifiMessage
 Если создастся 2.0 – проверить в свойствах проекта -  
 
 13.2) в проект добавить интерфейс
+```C#
 using System.Threading.Tasks;
-using BazorNotificationTemplate.Shared;
+using BlazorNotificationTemplate.Shared;
 
 namespace BlazorNotificationTemplate.Service
 {
@@ -301,14 +302,15 @@ namespace BlazorNotificationTemplate.Service
 
     }
 }
+```
 13.3) установить в проект пакет - System.Net.Http.Json
 13.4) добавить в проект реализацию интерфейса
-
+```C#
 using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using BazorNotificationTemplate.Shared;
+using BlazorNotificationTemplate.Shared;
 using Microsoft.Extensions.Logging;
 
 namespace BlazorNotificationTemplate.Service
@@ -353,15 +355,16 @@ namespace BlazorNotificationTemplate.Service
         #endregion
     }
 }
-
+```
 Внимательно проверьте https адресс, хост должен быть тот-же что в Inex.razor клиента
 
 14)	В проект Server добавить ссылку на проект Сервисов
 14.1) подключить реализацию в классе Startup.cs
+```C#
             services.AddSingleton<INotificationService, NotificationService>();
-
+```
 15)	В проекте Server добавить контроллер
-
+```C#
     [ApiController]
     [Route("[controller]")]
     public class NotificationTestController : ControllerBase
@@ -389,8 +392,10 @@ namespace BlazorNotificationTemplate.Service
             return Ok();
         }
     }
+```
 16)	Отредактировать Index.razor проекта Client
 16.1) Добавить разметку
+```C#
 <button class="btn btn-info" @onclick="StartTest">Start Test</button>
 <div class="row">
     <div class="col-8">
@@ -404,39 +409,19 @@ namespace BlazorNotificationTemplate.Service
         }
     </div>
 </div>
-
+```
 16.2) Добавить код вызова контроллера, передав ему ключ вызывающего пользователя
-        var result =await client.GetAsync($"NotificationTest/GetSomeData/{_Connection.ConnectionId}");
+```C#
+     async Task StartTest()
+    {
+        var result = await client.GetAsync($"NotificationTest/GetSomeData/{_Connection.ConnectionId}");
         if (result.IsSuccessStatusCode)
         {
 
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
 
 Запускаем проект, статус меняется на “Connected”, жмём старт и видим процесс обработки идущий на сервере
  
