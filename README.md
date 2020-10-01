@@ -1,3 +1,6 @@
+#### тестирование примера
+установить в качестве запускаемых проектов Api и Server
+
 #### 1 Создать приложение Blazor
     1.1 Blazor WebAssembly App
     1.2 ASP.NET Core hosted
