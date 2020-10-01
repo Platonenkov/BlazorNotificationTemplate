@@ -171,10 +171,8 @@ public class NotifiMessage
     <div class="col-8">
         @foreach (var item in notifications)
         {
-            <div class="row">
-                <h4>@item.Type</h4>
-                <h2>@item.Time</h2>
-                <h3>@item.Title</h3>
+            <div class="row card-header">
+                <span><b>@item.Type</b><p>@item.Time : @item.Title</p></span>
             </div>
         }
     </div>
