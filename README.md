@@ -1,57 +1,14 @@
-    1 Создать приложение Blazor
+#### 1 Создать приложение Blazor
+    1.1 Blazor WebAssembly App
+    1.2 ASP.NET Core hosted
+    1.3 Progressive Web Application
  
+#### 2 Добавить проект Веб-приложение ASP.NET Core
+ * Тип шаблона – Api
+         
+#### 3 В Api установить пакет Microsoft.AspNetCore.SignalR
 
-
-
-
-
-
-
-
-
-
-        1.1 Blazor WebAssembly App
-        1.2 ASP.NET Core hosted
-        1.3 Progressive Web Application
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    2 Добавить проект Веб-приложение ASP.NET Core
- 
-        2.1Тип шаблона – Api
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    3 В Api установить пакет Microsoft.AspNetCore.SignalR
-    4 В Api добавить класс
+#### 4 В Api добавить класс
 ```C#
 public class NotificationHub:Hub
     {
@@ -61,9 +18,8 @@ public class NotificationHub:Hub
         }
     }
 ```
-    5 правим файл Startup.cs проекта Api
-    
-        5.1 Дописать в ConfigureServices
+#### 5 правим файл Startup.cs проекта Api
+    5.1 Дописать в ConfigureServices
 ```C#
 services.AddCors(
                 o =>
@@ -75,7 +31,7 @@ services.AddCors(
                 });
 services.AddSignalR();
 ```
-        5.2 Дописать в Configure
+    5.2 Дописать в Configure
 ```C#
 app.UseCors("CorsPolicy");
 
@@ -98,7 +54,7 @@ app.UseCors("CorsPolicy");
 
 
 
-    6 В проект Shared добавить класс и enum
+#### 6 В проект Shared добавить класс и enum
 ```C#
 public class NotifiMessage
     {
@@ -119,7 +75,7 @@ public class NotifiMessage
         Error
     }
 ```
-    7 В проект с Api добавить пустой контроллер Api
+#### 7 В проект с Api добавить пустой контроллер Api
  
 Листинг
 ```C# 
@@ -196,12 +152,12 @@ public class NotifiMessage
         }
     }
 ```
-    8 В Client установить пакет - Microsoft.AspNetCore.SignalR.Client не путать с Microsoft.AspNet.SignalR.Client
+#### 8 В Client установить пакет - ### Microsoft.AspNetCore.SignalR.Client
+не путать с ~~Microsoft.AspNet.SignalR.Client~~
 
-    9 В свойствах проекта Api взять адрес подключения - у меня это https://localhost:44303/
+#### 9 В свойствах проекта Api взять адрес подключения - у меня это https://localhost:44303/
  
-
-    10 В клиент добавить листинг в файл index.razor
+#### 10 В клиент добавить листинг в файл index.razor
 ```C#
 @page "/"
 @using Microsoft.Extensions.Logging
@@ -275,22 +231,16 @@ public class NotifiMessage
 
 }
 ```
-    11 Правой кнопкой на решении – назначить запускаемые проекты
+#### 11 Правой кнопкой на решении – назначить запускаемые проекты
+:white_check_mark: Устанавливаем запуск api И сервера приложения
  
-
-Устанавливаем запуск api И сервера приложения
+#### 12 Запускаем проект для теста соединения
+:white_check_mark: Видим что статус подключения через пару секунд меняется на “Connected”
  
-    12 Запускаем проект для теста соединения
-
-Видим что статус подключения через пару секунд меняется на “Connected”
- 
-
-    13 Создать сервис для уведомлений
-
-        13.1 проект – библиотека Net.Standard 2.1
-Если создастся 2.0 – проверить в свойствах проекта -  
-
-        13.2 в проект добавить интерфейс
+#### 13 Создать сервис для уведомлений
+    13.1 проект – библиотека Net.Standard 2.1
+:white_check_mark: Если создастся 2.0 – проверить в свойствах проекта
+    13.2 в проект добавить интерфейс
 ```C#
 using System.Threading.Tasks;
 using BlazorNotificationTemplate.Shared;
@@ -305,8 +255,8 @@ namespace BlazorNotificationTemplate.Service
     }
 }
 ```
-       13.3 установить в проект пакет - System.Net.Http.Json
-       13.4 добавить в проект реализацию интерфейса
+    13.3 установить в проект пакет - System.Net.Http.Json
+    13.4 добавить в проект реализацию интерфейса
 ```C#
 using System;
 using System.Net.Http;
@@ -358,15 +308,15 @@ namespace BlazorNotificationTemplate.Service
     }
 }
 ```
-Внимательно проверьте https адресс, хост должен быть тот-же что в Inex.razor клиента
+#### Внимательно проверьте https адресс, хост должен быть тот-же что в Inex.razor клиента
 
-    14	В проект Server добавить ссылку на проект Сервисов
+#### 14	В проект Server добавить ссылку на проект Сервисов
 
-    14.1 подключить реализацию в классе Startup.cs
+        * подключить реализацию в классе Startup.cs
 ```C#
             services.AddSingleton<INotificationService, NotificationService>();
 ```
-    15	В проекте Server добавить контроллер
+#### 15	В проекте Server добавить контроллер
 ```C#
     [ApiController]
     [Route("[controller]")]
@@ -396,9 +346,9 @@ namespace BlazorNotificationTemplate.Service
         }
     }
 ```
-    16	Отредактировать Index.razor проекта Client
+#### 16	Отредактировать Index.razor проекта Client
 
-      16.1 Добавить разметку
+    16.1 Добавить разметку
 ```C#
 <button class="btn btn-info" @onclick="StartTest">Start Test</button>
 <div class="row">
@@ -414,7 +364,7 @@ namespace BlazorNotificationTemplate.Service
     </div>
 </div>
 ```
-      16.2 Добавить код вызова контроллера, передав ему ключ вызывающего пользователя
+    16.2 Добавить код вызова контроллера, передав ему ключ вызывающего пользователя
 ```C#
      async Task StartTest()
     {
@@ -427,5 +377,5 @@ namespace BlazorNotificationTemplate.Service
     }
 ```
 
-Запускаем проект, статус меняется на “Connected”, жмём старт и видим процесс обработки идущий на сервере
+:white_check_mark: Запускаем проект, статус меняется на “Connected”, жмём старт и видим процесс обработки идущий на сервере
  
