@@ -1,4 +1,4 @@
-1 Создать приложение Blazor
+    1 Создать приложение Blazor
  
 
 
@@ -10,9 +10,9 @@
 
 
 
-    1.1 Blazor WebAssembly App
-    1.2 ASP.NET Core hosted
-    1.3 Progressive Web Application
+        1.1 Blazor WebAssembly App
+        1.2 ASP.NET Core hosted
+        1.3 Progressive Web Application
  
 
 
@@ -30,9 +30,9 @@
 
 
 
-2 Добавить проект Веб-приложение ASP.NET Core
+    2 Добавить проект Веб-приложение ASP.NET Core
  
-    2.1Тип шаблона – Api
+        2.1Тип шаблона – Api
 
 
 
@@ -50,8 +50,8 @@
 
 
 
-3 В Api установить пакет Microsoft.AspNetCore.SignalR
-4 В Api добавить класс
+    3 В Api установить пакет Microsoft.AspNetCore.SignalR
+    4 В Api добавить класс
 ```C#
 public class NotificationHub:Hub
     {
@@ -61,9 +61,9 @@ public class NotificationHub:Hub
         }
     }
 ```
-5 правим файл Startup.cs проекта Api
+    5 правим файл Startup.cs проекта Api
     
-    5.1 Дописать в ConfigureServices
+        5.1 Дописать в ConfigureServices
 ```C#
 services.AddCors(
                 o =>
@@ -75,7 +75,7 @@ services.AddCors(
                 });
 services.AddSignalR();
 ```
-    5.2 Дописать в Configure
+        5.2 Дописать в Configure
 ```C#
 app.UseCors("CorsPolicy");
 
@@ -98,7 +98,7 @@ app.UseCors("CorsPolicy");
 
 
 
-6 В проект Shared добавить класс и enum
+    6 В проект Shared добавить класс и enum
 ```C#
 public class NotifiMessage
     {
