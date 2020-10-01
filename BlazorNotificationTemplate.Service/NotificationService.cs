@@ -22,7 +22,7 @@ namespace BlazorNotificationTemplate.Service
         {
             try
             {
-                using var response = await new HttpClient().PostAsJsonAsync("https://localhost:44363/api/notifications/SendMessage", message);
+                using var response = await new HttpClient().PostAsJsonAsync("https://localhost:44303/api/notifications/SendMessage", message);
                 return response.IsSuccessStatusCode;
             }
             catch (Exception e)
@@ -35,7 +35,7 @@ namespace BlazorNotificationTemplate.Service
         {
             try
             {
-                using var response = await new HttpClient().PostAsJsonAsync("https://localhost:44363/api/notifications/SendTitle", Title);
+                using var response = await new HttpClient().PostAsJsonAsync("https://localhost:44303/api/notifications/SendTitle", Title);
                 return response.IsSuccessStatusCode;
             }
             catch (Exception e)

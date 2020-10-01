@@ -16,6 +16,7 @@ namespace BlazorNotificationTemplate.Shared
     {
         none,
         Debug,
+        Success,
         Info,
         Warning,
         Error
