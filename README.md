@@ -240,6 +240,7 @@ public class NotifiMessage
 #### 13 Создать сервис для уведомлений
     13.1 проект – библиотека Net.Standard 2.1
 :white_check_mark: Если создастся 2.0 – проверить в свойствах проекта
+
     13.2 в проект добавить интерфейс
 ```C#
 using System.Threading.Tasks;
@@ -311,8 +312,7 @@ namespace BlazorNotificationTemplate.Service
 #### Внимательно проверьте https адресс, хост должен быть тот-же что в Inex.razor клиента
 
 #### 14	В проект Server добавить ссылку на проект Сервисов
-
-        * подключить реализацию в классе Startup.cs
+* подключить реализацию в классе Startup.cs
 ```C#
             services.AddSingleton<INotificationService, NotificationService>();
 ```
