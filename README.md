@@ -62,6 +62,7 @@ public class NotificationHub:Hub
     }
 ```
 5 правим файл Startup.cs проекта Api
+    
     5.1 Дописать в ConfigureServices
 ```C#
 services.AddCors(
@@ -196,6 +197,7 @@ public class NotifiMessage
     }
 ```
 8 В Client установить пакет - Microsoft.AspNetCore.SignalR.Client не путать с Microsoft.AspNet.SignalR.Client
+
 9 В свойствах проекта Api взять адрес подключения - у меня это https://localhost:44303/
  
 
@@ -279,10 +281,12 @@ public class NotifiMessage
 Устанавливаем запуск api И сервера приложения
  
 12 Запускаем проект для теста соединения
+
 Видим что статус подключения через пару секунд меняется на “Connected”
  
 
 13 Создать сервис для уведомлений
+
     13.1 проект – библиотека Net.Standard 2.1
 Если создастся 2.0 – проверить в свойствах проекта -  
 
@@ -357,6 +361,7 @@ namespace BlazorNotificationTemplate.Service
 Внимательно проверьте https адресс, хост должен быть тот-же что в Inex.razor клиента
 
 14	В проект Server добавить ссылку на проект Сервисов
+
     14.1 подключить реализацию в классе Startup.cs
 ```C#
             services.AddSingleton<INotificationService, NotificationService>();
@@ -392,6 +397,7 @@ namespace BlazorNotificationTemplate.Service
     }
 ```
 16	Отредактировать Index.razor проекта Client
+
     16.1 Добавить разметку
 ```C#
 <button class="btn btn-info" @onclick="StartTest">Start Test</button>
