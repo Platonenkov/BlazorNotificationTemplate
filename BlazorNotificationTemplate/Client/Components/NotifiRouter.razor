@@ -1,0 +1,14 @@
+﻿@using BlazorNotificationTemplate.Service.Implementations
+@inject ClientNotificationService Notifi
+<div class="row">
+    <p>Connection Status: </p>
+    <p>@Notifi.connectionStatus </p>
+    <div @bind-style="Notifi.StatusColor" @bind-style:event="oninput"></div>
+</div>
+@code
+{
+    protected override void OnInitialized()
+    {
+        Notifi.OnChange += StateHasChanged;
+    }
+}

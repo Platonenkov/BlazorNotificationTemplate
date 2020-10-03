@@ -1,0 +1,17 @@
+﻿@using BlazorNotificationTemplate.Service.Implementations
+@inject ClientNotificationService Notifi
+
+<div>
+    @foreach (var (date, message) in Notifi.events.OrderByDescending(i => i.Key))
+    {
+        <p>@date: @message</p>
+    }
+</div>
+@code
+{
+    protected override void OnInitialized()
+    {
+        Notifi.OnChange += StateHasChanged;
+    }
+
+}
