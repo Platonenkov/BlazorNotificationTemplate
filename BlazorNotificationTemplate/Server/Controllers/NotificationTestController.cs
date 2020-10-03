@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BlazorNotificationTemplate.Shared;
 using BlazorNotificationTemplate.Service;
+using BlazorNotificationTemplate.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -16,9 +17,9 @@ namespace BlazorNotificationTemplate.Server.Controllers
     {
 
         private readonly ILogger<NotificationTestController> logger;
-        private readonly INotificationService _Notification;
+        private readonly IServerNotificationService _Notification;
 
-        public NotificationTestController(ILogger<NotificationTestController> logger, INotificationService notification)
+        public NotificationTestController(ILogger<NotificationTestController> logger, IServerNotificationService notification)
         {
             this.logger = logger;
             _Notification = notification;

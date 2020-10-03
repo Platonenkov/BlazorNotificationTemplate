@@ -2,16 +2,17 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using BlazorNotificationTemplate.Service.Interfaces;
 using BlazorNotificationTemplate.Shared;
 using Microsoft.Extensions.Logging;
 
-namespace BlazorNotificationTemplate.Service
+namespace BlazorNotificationTemplate.Service.Implementations
 {
-    public class NotificationService : INotificationService
+    public class ServerNotificationService : IServerNotificationService
     {
-        private readonly ILogger<NotificationService> _Logger;
+        private readonly ILogger<ServerNotificationService> _Logger;
 
-        public NotificationService(ILogger<NotificationService> Logger)
+        public ServerNotificationService(ILogger<ServerNotificationService> Logger)
         {
             _Logger = Logger;
         }

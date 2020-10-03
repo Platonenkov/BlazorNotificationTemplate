@@ -2,14 +2,16 @@
 @using Microsoft.Extensions.Logging
 @using BlazorNotificationTemplate.Shared
 @using Microsoft.AspNetCore.SignalR.Client
+@using BlazorNotificationTemplate.Service.Implementations
 @inject HttpClient client
 @inject ILogger<Index> Logger
+@inject ClientNotificationService NotifiService
 
-<h3>Connection Status: @connectionStatus</h3>
+<h3>Connection Status: @NotifiService.connectionStatus</h3>
 <button class="btn btn-info" @onclick="StartTest">Start Test</button>
 <div class="row">
     <div class="col-8">
-        @foreach (var item in notifications)
+        @foreach (var item in NotifiService.notifications)
         {
             <div class="row card-header">
                 <span><b>@item.Type</b><p>@item.Time : @item.Title</p></span>
@@ -20,60 +22,19 @@
 
 
 @code{
+    protected override void OnInitialized()
+    {
+        NotifiService.OnChange += StateHasChanged;
+    }
 
     async Task StartTest()
     {
-        var result = await client.GetAsync($"NotificationTest/GetSomeData/{_Connection.ConnectionId}");
+        var result = await client.GetAsync($"NotificationTest/GetSomeData/{NotifiService.UserId}");
         if (result.IsSuccessStatusCode)
         {
 
         }
 
     }
-    #region Notification
-
-    string url = "https://localhost:44303/notificationhub";
-
-    List<NotifiMessage> notifications = new List<NotifiMessage>();
-    HubConnection _Connection = null;
-    private bool _IsConnected = false;
-    bool IsConnected { get; set; }
-
-    string connectionStatus = "Closed";
-
-    protected override async Task OnInitializedAsync()
-    {
-
-        await ConnectToSrver();
-
-    }
-    private async Task ConnectToSrver()
-    {
-        _Connection = new HubConnectionBuilder()
-            .WithUrl(url)
-            .Build();
-
-        await _Connection.StartAsync();
-        IsConnected = true;
-
-        connectionStatus = "Connected";
-
-        _Connection.Closed += async (s) =>
-        {
-            IsConnected = false;
-            connectionStatus = "Disconnected";
-            await _Connection.StartAsync();
-            IsConnected = true;
-            connectionStatus = "Connected";
-        };
-
-        _Connection.On<NotifiMessage>("notification", m =>
-        {
-            notifications.Add(m);
-            StateHasChanged();
-        });
-    }
-
-    #endregion
 
 }

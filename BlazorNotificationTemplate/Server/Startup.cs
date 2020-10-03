@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using BlazorNotificationTemplate.Service;
+using BlazorNotificationTemplate.Service.Implementations;
+using BlazorNotificationTemplate.Service.Interfaces;
 
 namespace BlazorNotificationTemplate.Server
 {
@@ -26,7 +28,7 @@ namespace BlazorNotificationTemplate.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddSingleton<INotificationService, NotificationService>();
+            services.AddSingleton<IServerNotificationService, ServerNotificationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
