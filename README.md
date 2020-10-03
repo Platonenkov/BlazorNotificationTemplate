@@ -496,6 +496,7 @@ namespace BlazorNotificationTemplate.Service.Implementations
 }
 ```
     20.2 Листинг Index.razor
+    Так же при удалении реализации сервиса который мы вынесли - добавим подписку на изменения в сервисе, чтобы менять данные на странице при таких изменениях
 ```C#
 @page "/"
 @using Microsoft.Extensions.Logging
@@ -521,6 +522,10 @@ namespace BlazorNotificationTemplate.Service.Implementations
 
 
 @code{
+    protected override void OnInitialized()
+    {
+        NotifiService.OnChange += StateHasChanged;
+    }
 
     async Task StartTest()
     {
