@@ -497,37 +497,16 @@ namespace BlazorNotificationTemplate.Service.Implementations
 }
 ```
     20.2 Листинг Index.razor
-    Так же при удалении реализации сервиса который мы вынесли - добавим подписку на изменения в сервисе, чтобы менять данные на странице при таких изменениях
 ```C#
 @page "/"
-@using Microsoft.Extensions.Logging
-@using BlazorNotificationTemplate.Shared
-@using Microsoft.AspNetCore.SignalR.Client
 @using BlazorNotificationTemplate.Service.Implementations
 @inject HttpClient client
-@inject ILogger<Index> Logger
 @inject ClientNotificationService NotifiService
 
 <h3>Connection Status: @NotifiService.connectionStatus</h3>
 <button class="btn btn-info" @onclick="StartTest">Start Test</button>
-<div class="row">
-    <div class="col-8">
-        @foreach (var item in NotifiService.notifications)
-        {
-            <div class="row card-header">
-                <span><b>@item.Type</b><p>@item.Time : @item.Title</p></span>
-            </div>
-        }
-    </div>
-</div>
-
 
 @code{
-    protected override void OnInitialized()
-    {
-        NotifiService.OnChange += StateHasChanged;
-    }
-
     async Task StartTest()
     {
         var result = await client.GetAsync($"NotificationTest/GetSomeData/{NotifiService.UserId}");
@@ -537,11 +516,180 @@ namespace BlazorNotificationTemplate.Service.Implementations
         }
 
     }
-
 }
 ```
-20.3 Сделаем инекцию сервиса в Client
+
+    20.3 Сделаем инекцию сервиса в Client
 Добавим в проект Client в файл Startup.cs строку
 ```C#
     builder.Services.AddScoped<ClientNotificationService>();
 ```
+
+21 Создадим несколько компонентов, для удобства размещения данных
+
+    21.1 Создадим папку Components и положим их в неё
+    21.2 Компонент NotifiRouter.razor
+    Будет висеть сверху страниц как элемент показывающий статус соединения с сервисом
+```C#
+@using BlazorNotificationTemplate.Service.Implementations
+@inject ClientNotificationService Notifi
+<div class="row">
+    <p>Connection Status: </p>
+    <p>@Notifi.connectionStatus </p>
+    <div @bind-style="Notifi.StatusColor" @bind-style:event="oninput"></div>
+</div>
+@code
+{
+    protected override void OnInitialized()
+    {
+        Notifi.OnChange += StateHasChanged;
+    }
+}
+```
+    21.3 Компонент Log.razor, для отображения элементов из сервиса
+```
+@using BlazorNotificationTemplate.Service.Implementations
+@inject ClientNotificationService Notifi
+
+<div>
+    @foreach (var (date, message) in Notifi.events.OrderByDescending(i => i.Key))
+    {
+        <p>@date: @message</p>
+    }
+</div>
+@code
+{
+    protected override void OnInitialized()
+    {
+        Notifi.OnChange += StateHasChanged;
+    }
+
+}
+```
+    21.4 Компонент LogSection.razor, который будет висень в футере на страницах и отображать логи
+```C#
+@using BlazorNotificationTemplate.Service.Implementations
+@inject ClientNotificationService notifi
+
+<h3>Log</h3>
+<div class="row" style="height: 150px; border: 1px solid darkgray; overflow-y: scroll; ">
+    <Log/>
+</div>
+```
+
+22 Отредактируем шаблон страниц MainLayout.razor
+```C#
+@inherits LayoutComponentBase
+
+<div class="sidebar">
+    <NavMenu />
+</div>
+
+<div class="main" id="container">
+    <div class="top-row px-4" id="header">
+        <BlazorNotificationTemplate.Client.Components.NotifiRouter />
+
+        <a href="https://github.com/Platonenkov/BlazorNotificationTemplate" target="_blank" class="ml-md-auto">See project</a>
+    </div>
+
+    <div class="content px-4" id="body">
+        @Body
+    </div>
+    <div class="px-4" id="footer">
+        <BlazorNotificationTemplate.Client.Components.LogSection/>
+    </div>
+</div>
+
+<style>
+    
+    #container {
+        min-height:100%;
+        position:relative;
+    }
+    #header {
+        padding:10px;
+    }
+    #body {
+        padding:10px;
+        padding-bottom:70px;   /* Высота блока "footer" */
+    }
+    #footer {
+        position:absolute;
+        bottom:0;
+        width:100%;
+        height:200px;   /* Высота блока "footer" */
+    }
+</style>
+```
+23 Создадим второй шаблон LogFreeLayout.razor в папке Shared, тут не будет секции с логом
+```C#
+@inherits LayoutComponentBase
+
+<div class="sidebar">
+    <NavMenu />
+</div>
+
+<div class="main">
+    <div class="top-row px-4">
+        <BlazorNotificationTemplate.Client.Components.NotifiRouter />
+
+        <a href="https://github.com/Platonenkov/BlazorNotificationTemplate" target="_blank" class="ml-md-auto">See project</a>
+    </div>
+
+    <div class="content px-4" id="body">
+        @Body
+    </div>
+</div>
+```
+24 Добавим страничку с логом
+```C#
+@page "/LogPage"
+@layout LogFreeLayout
+@using BlazorNotificationTemplate.Client.Components
+
+<h3>Logs</h3>
+<Log/>
+```
+25 Отредактируем меню - NavMenu.razor
+```C#
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">BlazorNotificationTemplate</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+            </NavLink>
+        </li>  
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="LogPage">
+                <span class="oi oi-plus" aria-hidden="true"></span> Logs
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
+```
+
+#Пока это все, будем развивать дальше. Надеюсь смог помоч в вашем решении.
+
