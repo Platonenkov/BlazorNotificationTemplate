@@ -74,6 +74,7 @@ public class NotifiMessage
     {
         none,
         Debug,
+        Access,
         Info,
         Warning,
         Error
