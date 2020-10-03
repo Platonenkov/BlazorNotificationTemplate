@@ -473,6 +473,7 @@ namespace BlazorNotificationTemplate.Service.Implementations
             IsConnected = true;
 
             connectionStatus = "Connected";
+            NotifyStateChanged();
 
             _Connection.Closed += async (s) =>
             {
