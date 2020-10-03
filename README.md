@@ -1,18 +1,18 @@
-### тестирование примера
+## тестирование примера
 * установить в качестве запускаемых проектов Api и Server
 
-### Создать свой сервис
-#### 1 Создать приложение Blazor
+## Создать свой сервис
+### 1 Создать приложение Blazor
     1.1 Blazor WebAssembly App
     1.2 ASP.NET Core hosted
     1.3 Progressive Web Application
  
-#### 2 Добавить проект Веб-приложение ASP.NET Core
+### 2 Добавить проект Веб-приложение ASP.NET Core
  * Тип шаблона – Api
          
-#### 3 В Api установить пакет Microsoft.AspNetCore.SignalR
+### 3 В Api установить пакет Microsoft.AspNetCore.SignalR
 
-#### 4 В Api добавить класс
+### 4 В Api добавить класс
 ```C#
 public class NotificationHub:Hub
     {
@@ -22,7 +22,7 @@ public class NotificationHub:Hub
         }
     }
 ```
-#### 5 правим файл Startup.cs проекта Api
+### 5 правим файл Startup.cs проекта Api
     5.1 Дописать в ConfigureServices
 ```C#
 services.AddCors(
@@ -58,7 +58,7 @@ app.UseCors("CorsPolicy");
 
 
 
-#### 6 В проект Shared добавить класс и enum
+### 6 В проект Shared добавить класс и enum
 ```C#
 public class NotifiMessage
     {
@@ -74,12 +74,13 @@ public class NotifiMessage
     {
         none,
         Debug,
+        Success,
         Info,
         Warning,
         Error
     }
 ```
-#### 7 В проект с Api добавить пустой контроллер Api
+### 7 В проект с Api добавить пустой контроллер Api
  
 Листинг
 ```C# 
@@ -156,12 +157,12 @@ public class NotifiMessage
         }
     }
 ```
-#### 8 В Client установить пакет - ### Microsoft.AspNetCore.SignalR.Client
+### 8 В Client установить пакет - ### Microsoft.AspNetCore.SignalR.Client
 не путать с ~~Microsoft.AspNet.SignalR.Client~~
 
-#### 9 В свойствах проекта Api взять адрес подключения - у меня это https://localhost:44303/
+### 9 В свойствах проекта Api взять адрес подключения - у меня это https://localhost:44303/
  
-#### 10 В клиент добавить листинг в файл index.razor
+### 10 В клиент добавить листинг в файл index.razor
 ```C#
 @page "/"
 @using Microsoft.Extensions.Logging
@@ -233,13 +234,13 @@ public class NotifiMessage
 
 }
 ```
-#### 11 Правой кнопкой на решении – назначить запускаемые проекты
+### 11 Правой кнопкой на решении – назначить запускаемые проекты
 :white_check_mark: Устанавливаем запуск api И сервера приложения
  
-#### 12 Запускаем проект для теста соединения
+### 12 Запускаем проект для теста соединения
 :white_check_mark: Видим что статус подключения через пару секунд меняется на “Connected”
  
-#### 13 Создать сервис для уведомлений
+### 13 Создать сервис для уведомлений
     13.1 проект – библиотека Net.Standard 2.1
 :white_check_mark: Если создастся 2.0 – проверить в свойствах проекта
 
@@ -311,14 +312,14 @@ namespace BlazorNotificationTemplate.Service
     }
 }
 ```
-#### Внимательно проверьте https адресс, хост должен быть тот-же что в Inex.razor клиента
+### Внимательно проверьте https адресс, хост должен быть тот-же что в Inex.razor клиента
 
-#### 14	В проект Server добавить ссылку на проект Сервисов
+### 14	В проект Server добавить ссылку на проект Сервисов
 * подключить реализацию в классе Startup.cs
 ```C#
             services.AddSingleton<INotificationService, NotificationService>();
 ```
-#### 15	В проекте Server добавить контроллер
+### 15	В проекте Server добавить контроллер
 ```C#
     [ApiController]
     [Route("[controller]")]
@@ -348,7 +349,7 @@ namespace BlazorNotificationTemplate.Service
         }
     }
 ```
-#### 16	Отредактировать Index.razor проекта Client
+### 16	Отредактировать Index.razor проекта Client
 
     16.1 Добавить разметку
 ```C#
@@ -378,7 +379,7 @@ namespace BlazorNotificationTemplate.Service
 
     }
 ```
-#### 17 Редактируем файл gitIgnore
+### 17 Редактируем файл gitIgnore
 дописываем в конце файла строки
 ```
 # Don't ignore server launchSettings.json. We need a specific port number for auth to work.
@@ -389,15 +390,15 @@ namespace BlazorNotificationTemplate.Service
  
  ## Выносим реализацию вывода в Layout для работы с ним на всех окнах
  
- #### 18 переименуем класс и интерфейс
+ ### 18 переименуем класс и интерфейс
  ```
  INotificationService -> IServerNotificationService
  NotificationService -> ServerNotificationService
 ```
 
-#### 19 установим в проект с сервисами пакет Microsoft.AspNetCore.SignalR.Client
+### 19 установим в проект с сервисами пакет Microsoft.AspNetCore.SignalR.Client
 
-#### 20 Создадим новый сервис для отображения сообщений на клиенте и переместим в него логику из страницы Index.razor
+### 20 Создадим новый сервис для отображения сообщений на клиенте и переместим в него логику из страницы Index.razor
 Вынося реализацию в сервис добавим возможность отслеживать изменения добавив событие OnChange
 
     20.1 Листинг ClientNotificationService.cs
@@ -497,37 +498,16 @@ namespace BlazorNotificationTemplate.Service.Implementations
 }
 ```
     20.2 Листинг Index.razor
-    Так же при удалении реализации сервиса который мы вынесли - добавим подписку на изменения в сервисе, чтобы менять данные на странице при таких изменениях
 ```C#
 @page "/"
-@using Microsoft.Extensions.Logging
-@using BlazorNotificationTemplate.Shared
-@using Microsoft.AspNetCore.SignalR.Client
 @using BlazorNotificationTemplate.Service.Implementations
 @inject HttpClient client
-@inject ILogger<Index> Logger
 @inject ClientNotificationService NotifiService
 
 <h3>Connection Status: @NotifiService.connectionStatus</h3>
 <button class="btn btn-info" @onclick="StartTest">Start Test</button>
-<div class="row">
-    <div class="col-8">
-        @foreach (var item in NotifiService.notifications)
-        {
-            <div class="row card-header">
-                <span><b>@item.Type</b><p>@item.Time : @item.Title</p></span>
-            </div>
-        }
-    </div>
-</div>
-
 
 @code{
-    protected override void OnInitialized()
-    {
-        NotifiService.OnChange += StateHasChanged;
-    }
-
     async Task StartTest()
     {
         var result = await client.GetAsync($"NotificationTest/GetSomeData/{NotifiService.UserId}");
@@ -537,11 +517,180 @@ namespace BlazorNotificationTemplate.Service.Implementations
         }
 
     }
-
 }
 ```
-20.3 Сделаем инекцию сервиса в Client
+
+    20.3 Сделаем инекцию сервиса в Client
 Добавим в проект Client в файл Startup.cs строку
 ```C#
     builder.Services.AddScoped<ClientNotificationService>();
 ```
+
+### 21 Создадим несколько компонентов, для удобства размещения данных
+
+    21.1 Создадим папку Components и положим их в неё
+    21.2 Компонент NotifiRouter.razor
+    Будет висеть сверху страниц как элемент показывающий статус соединения с сервисом
+```C#
+@using BlazorNotificationTemplate.Service.Implementations
+@inject ClientNotificationService Notifi
+<div class="row">
+    <p>Connection Status: </p>
+    <p>@Notifi.connectionStatus </p>
+    <div @bind-style="Notifi.StatusColor" @bind-style:event="oninput"></div>
+</div>
+@code
+{
+    protected override void OnInitialized()
+    {
+        Notifi.OnChange += StateHasChanged;
+    }
+}
+```
+    21.3 Компонент Log.razor, для отображения элементов из сервиса
+```
+@using BlazorNotificationTemplate.Service.Implementations
+@inject ClientNotificationService Notifi
+
+<div>
+    @foreach (var (date, message) in Notifi.events.OrderByDescending(i => i.Key))
+    {
+        <p>@date: @message</p>
+    }
+</div>
+@code
+{
+    protected override void OnInitialized()
+    {
+        Notifi.OnChange += StateHasChanged;
+    }
+
+}
+```
+    21.4 Компонент LogSection.razor, который будет висень в футере на страницах и отображать логи
+```C#
+@using BlazorNotificationTemplate.Service.Implementations
+@inject ClientNotificationService notifi
+
+<h3>Log</h3>
+<div class="row" style="height: 150px; border: 1px solid darkgray; overflow-y: scroll; ">
+    <Log/>
+</div>
+```
+
+### 22 Отредактируем шаблон страниц MainLayout.razor
+```C#
+@inherits LayoutComponentBase
+
+<div class="sidebar">
+    <NavMenu />
+</div>
+
+<div class="main" id="container">
+    <div class="top-row px-4" id="header">
+        <BlazorNotificationTemplate.Client.Components.NotifiRouter />
+
+        <a href="https://github.com/Platonenkov/BlazorNotificationTemplate" target="_blank" class="ml-md-auto">See project</a>
+    </div>
+
+    <div class="content px-4" id="body">
+        @Body
+    </div>
+    <div class="px-4" id="footer">
+        <BlazorNotificationTemplate.Client.Components.LogSection/>
+    </div>
+</div>
+
+<style>
+    
+    #container {
+        min-height:100%;
+        position:relative;
+    }
+    #header {
+        padding:10px;
+    }
+    #body {
+        padding:10px;
+        padding-bottom:70px;   /* Высота блока "footer" */
+    }
+    #footer {
+        position:absolute;
+        bottom:0;
+        width:100%;
+        height:200px;   /* Высота блока "footer" */
+    }
+</style>
+```
+### 23 Создадим второй шаблон LogFreeLayout.razor в папке Shared, тут не будет секции с логом
+```C#
+@inherits LayoutComponentBase
+
+<div class="sidebar">
+    <NavMenu />
+</div>
+
+<div class="main">
+    <div class="top-row px-4">
+        <BlazorNotificationTemplate.Client.Components.NotifiRouter />
+
+        <a href="https://github.com/Platonenkov/BlazorNotificationTemplate" target="_blank" class="ml-md-auto">See project</a>
+    </div>
+
+    <div class="content px-4" id="body">
+        @Body
+    </div>
+</div>
+```
+### 24 Добавим страничку с логом
+```C#
+@page "/LogPage"
+@layout LogFreeLayout
+@using BlazorNotificationTemplate.Client.Components
+
+<h3>Logs</h3>
+<Log/>
+```
+### 25 Отредактируем меню - NavMenu.razor
+```C#
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">BlazorNotificationTemplate</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+            </NavLink>
+        </li>  
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="LogPage">
+                <span class="oi oi-plus" aria-hidden="true"></span> Logs
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
+```
+
+## Пока это все, будем развивать дальше. Надеюсь смог помоч в вашем решении.
+
