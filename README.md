@@ -534,3 +534,8 @@ namespace BlazorNotificationTemplate.Service.Implementations
 
 }
 ```
+20.3 Сделаем инекцию сервиса в Client
+Добавим в проект Client в файл Startup.cs строку
+```C#
+    builder.Services.AddScoped<ClientNotificationService>();
+```
