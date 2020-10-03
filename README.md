@@ -387,3 +387,150 @@ namespace BlazorNotificationTemplate.Service
 
 :white_check_mark: Запускаем проект, статус меняется на “Connected”, жмём старт и видим процесс обработки идущий на сервере
  
+ ## Выносим реализацию вывода в Layout для работы с ним на всех окнах
+ 
+ #### 18 переименуем класс и интерфейс
+ ```
+ INotificationService -> IServerNotificationService
+ NotificationService -> ServerNotificationService
+```
+
+#### 19 установим в проект с сервисами пакет Microsoft.AspNetCore.SignalR.Client
+
+#### 20 Создадим новый сервис для отображения сообщений на клиенте и переместим в него логику из страницы Index.razor
+Вынося реализацию в сервис добавим возможность отслеживать изменения добавив событие OnChange
+
+    20.1 Листинг ClientNotificationService.cs
+```C#
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using BlazorNotificationTemplate.Shared;
+using Microsoft.AspNetCore.SignalR.Client;
+
+namespace BlazorNotificationTemplate.Service.Implementations
+{
+    public class ClientNotificationService
+    {
+        // Lets components receive change notifications
+        // Could have whatever granularity you want (more events, hierarchy...)
+        public event Action OnChange;
+        private void NotifyStateChanged() => OnChange?.Invoke();
+
+        public ClientNotificationService()
+        {
+            ConnectToServerAsync();
+        }
+        #region Notification
+        public Dictionary<DateTime?, string> events = new Dictionary<DateTime?, string>();
+
+        string url = "https://localhost:44303/notificationhub";
+
+        public ObservableCollection<NotifiMessage> notifications = new ObservableCollection<NotifiMessage>();
+        HubConnection _Connection = null;
+
+        public string UserId => _Connection.ConnectionId;
+
+        public string StatusColor { get; set; } = "background-color: red; width: 20px; height: 20px; border-radius: 50%";
+        private bool _IsConnected;
+        public bool IsConnected
+        {
+            get => _IsConnected;
+            set
+            {
+                _IsConnected = value;
+                StatusColor = value ? "background-color: green; width: 20px; height: 20px; border-radius: 50%" : "background-color: red; width: 20px; height: 20px; border-radius: 50%";
+                NotifyStateChanged();
+            }
+        }
+        public string connectionStatus { get; set; } = "Closed";
+
+
+        void ShowNotification(NotifiMessage message)
+        {
+            events.Add(message.Time, $"{message.Type}: {message.Title}");
+            NotifyStateChanged();
+        }
+        private async void ConnectToServerAsync()
+        {
+            notifications.CollectionChanged += async (sender, e) =>
+            {
+                if (!(sender is ObservableCollection<NotifiMessage>))
+                {
+                    return;
+                }
+
+                foreach (NotifiMessage message in e.NewItems)
+                {
+                    ShowNotification(message);
+                }
+            };
+            _Connection = new HubConnectionBuilder()
+                .WithUrl(url)
+                .Build();
+
+            await _Connection.StartAsync();
+            IsConnected = true;
+
+            connectionStatus = "Connected";
+
+            _Connection.Closed += async (s) =>
+            {
+                IsConnected = false;
+                connectionStatus = "Disconnected";
+                await _Connection.StartAsync();
+                IsConnected = true;
+                connectionStatus = "Connected";
+                NotifyStateChanged();
+            };
+
+            _Connection.On<NotifiMessage>("notification", m =>
+            {
+                notifications.Add(m);
+                NotifyStateChanged();
+            });
+        }
+
+        #endregion
+    }
+}
+```
+    20.2 Листинг Index.razor
+```C#
+@page "/"
+@using Microsoft.Extensions.Logging
+@using BlazorNotificationTemplate.Shared
+@using Microsoft.AspNetCore.SignalR.Client
+@using BlazorNotificationTemplate.Service.Implementations
+@inject HttpClient client
+@inject ILogger<Index> Logger
+@inject ClientNotificationService NotifiService
+
+<h3>Connection Status: @NotifiService.connectionStatus</h3>
+<button class="btn btn-info" @onclick="StartTest">Start Test</button>
+<div class="row">
+    <div class="col-8">
+        @foreach (var item in NotifiService.notifications)
+        {
+            <div class="row card-header">
+                <span><b>@item.Type</b><p>@item.Time : @item.Title</p></span>
+            </div>
+        }
+    </div>
+</div>
+
+
+@code{
+
+    async Task StartTest()
+    {
+        var result = await client.GetAsync($"NotificationTest/GetSomeData/{NotifiService.UserId}");
+        if (result.IsSuccessStatusCode)
+        {
+
+        }
+
+    }
+
+}
+```
