@@ -1,18 +1,18 @@
-### тестирование примера
+## тестирование примера
 * установить в качестве запускаемых проектов Api и Server
 
-### Создать свой сервис
-#### 1 Создать приложение Blazor
+## Создать свой сервис
+### 1 Создать приложение Blazor
     1.1 Blazor WebAssembly App
     1.2 ASP.NET Core hosted
     1.3 Progressive Web Application
  
-#### 2 Добавить проект Веб-приложение ASP.NET Core
+### 2 Добавить проект Веб-приложение ASP.NET Core
  * Тип шаблона – Api
          
-#### 3 В Api установить пакет Microsoft.AspNetCore.SignalR
+### 3 В Api установить пакет Microsoft.AspNetCore.SignalR
 
-#### 4 В Api добавить класс
+### 4 В Api добавить класс
 ```C#
 public class NotificationHub:Hub
     {
@@ -22,7 +22,7 @@ public class NotificationHub:Hub
         }
     }
 ```
-#### 5 правим файл Startup.cs проекта Api
+### 5 правим файл Startup.cs проекта Api
     5.1 Дописать в ConfigureServices
 ```C#
 services.AddCors(
@@ -58,7 +58,7 @@ app.UseCors("CorsPolicy");
 
 
 
-#### 6 В проект Shared добавить класс и enum
+### 6 В проект Shared добавить класс и enum
 ```C#
 public class NotifiMessage
     {
@@ -79,7 +79,7 @@ public class NotifiMessage
         Error
     }
 ```
-#### 7 В проект с Api добавить пустой контроллер Api
+### 7 В проект с Api добавить пустой контроллер Api
  
 Листинг
 ```C# 
@@ -156,12 +156,12 @@ public class NotifiMessage
         }
     }
 ```
-#### 8 В Client установить пакет - ### Microsoft.AspNetCore.SignalR.Client
+### 8 В Client установить пакет - ### Microsoft.AspNetCore.SignalR.Client
 не путать с ~~Microsoft.AspNet.SignalR.Client~~
 
-#### 9 В свойствах проекта Api взять адрес подключения - у меня это https://localhost:44303/
+### 9 В свойствах проекта Api взять адрес подключения - у меня это https://localhost:44303/
  
-#### 10 В клиент добавить листинг в файл index.razor
+### 10 В клиент добавить листинг в файл index.razor
 ```C#
 @page "/"
 @using Microsoft.Extensions.Logging
@@ -233,13 +233,13 @@ public class NotifiMessage
 
 }
 ```
-#### 11 Правой кнопкой на решении – назначить запускаемые проекты
+### 11 Правой кнопкой на решении – назначить запускаемые проекты
 :white_check_mark: Устанавливаем запуск api И сервера приложения
  
-#### 12 Запускаем проект для теста соединения
+### 12 Запускаем проект для теста соединения
 :white_check_mark: Видим что статус подключения через пару секунд меняется на “Connected”
  
-#### 13 Создать сервис для уведомлений
+### 13 Создать сервис для уведомлений
     13.1 проект – библиотека Net.Standard 2.1
 :white_check_mark: Если создастся 2.0 – проверить в свойствах проекта
 
@@ -311,14 +311,14 @@ namespace BlazorNotificationTemplate.Service
     }
 }
 ```
-#### Внимательно проверьте https адресс, хост должен быть тот-же что в Inex.razor клиента
+### Внимательно проверьте https адресс, хост должен быть тот-же что в Inex.razor клиента
 
-#### 14	В проект Server добавить ссылку на проект Сервисов
+### 14	В проект Server добавить ссылку на проект Сервисов
 * подключить реализацию в классе Startup.cs
 ```C#
             services.AddSingleton<INotificationService, NotificationService>();
 ```
-#### 15	В проекте Server добавить контроллер
+### 15	В проекте Server добавить контроллер
 ```C#
     [ApiController]
     [Route("[controller]")]
@@ -348,7 +348,7 @@ namespace BlazorNotificationTemplate.Service
         }
     }
 ```
-#### 16	Отредактировать Index.razor проекта Client
+### 16	Отредактировать Index.razor проекта Client
 
     16.1 Добавить разметку
 ```C#
@@ -378,7 +378,7 @@ namespace BlazorNotificationTemplate.Service
 
     }
 ```
-#### 17 Редактируем файл gitIgnore
+### 17 Редактируем файл gitIgnore
 дописываем в конце файла строки
 ```
 # Don't ignore server launchSettings.json. We need a specific port number for auth to work.
@@ -389,15 +389,15 @@ namespace BlazorNotificationTemplate.Service
  
  ## Выносим реализацию вывода в Layout для работы с ним на всех окнах
  
- #### 18 переименуем класс и интерфейс
+ ### 18 переименуем класс и интерфейс
  ```
  INotificationService -> IServerNotificationService
  NotificationService -> ServerNotificationService
 ```
 
-#### 19 установим в проект с сервисами пакет Microsoft.AspNetCore.SignalR.Client
+### 19 установим в проект с сервисами пакет Microsoft.AspNetCore.SignalR.Client
 
-#### 20 Создадим новый сервис для отображения сообщений на клиенте и переместим в него логику из страницы Index.razor
+### 20 Создадим новый сервис для отображения сообщений на клиенте и переместим в него логику из страницы Index.razor
 Вынося реализацию в сервис добавим возможность отслеживать изменения добавив событие OnChange
 
     20.1 Листинг ClientNotificationService.cs
@@ -525,7 +525,7 @@ namespace BlazorNotificationTemplate.Service.Implementations
     builder.Services.AddScoped<ClientNotificationService>();
 ```
 
-21 Создадим несколько компонентов, для удобства размещения данных
+### 21 Создадим несколько компонентов, для удобства размещения данных
 
     21.1 Создадим папку Components и положим их в неё
     21.2 Компонент NotifiRouter.razor
@@ -577,7 +577,7 @@ namespace BlazorNotificationTemplate.Service.Implementations
 </div>
 ```
 
-22 Отредактируем шаблон страниц MainLayout.razor
+### 22 Отредактируем шаблон страниц MainLayout.razor
 ```C#
 @inherits LayoutComponentBase
 
@@ -621,7 +621,7 @@ namespace BlazorNotificationTemplate.Service.Implementations
     }
 </style>
 ```
-23 Создадим второй шаблон LogFreeLayout.razor в папке Shared, тут не будет секции с логом
+### 23 Создадим второй шаблон LogFreeLayout.razor в папке Shared, тут не будет секции с логом
 ```C#
 @inherits LayoutComponentBase
 
@@ -641,7 +641,7 @@ namespace BlazorNotificationTemplate.Service.Implementations
     </div>
 </div>
 ```
-24 Добавим страничку с логом
+### 24 Добавим страничку с логом
 ```C#
 @page "/LogPage"
 @layout LogFreeLayout
@@ -650,7 +650,7 @@ namespace BlazorNotificationTemplate.Service.Implementations
 <h3>Logs</h3>
 <Log/>
 ```
-25 Отредактируем меню - NavMenu.razor
+### 25 Отредактируем меню - NavMenu.razor
 ```C#
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">BlazorNotificationTemplate</a>
@@ -691,5 +691,5 @@ namespace BlazorNotificationTemplate.Service.Implementations
 }
 ```
 
-#Пока это все, будем развивать дальше. Надеюсь смог помоч в вашем решении.
+## Пока это все, будем развивать дальше. Надеюсь смог помоч в вашем решении.
 
