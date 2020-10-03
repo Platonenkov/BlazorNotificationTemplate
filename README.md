@@ -378,6 +378,12 @@ namespace BlazorNotificationTemplate.Service
 
     }
 ```
+#### 17 Редактируем файл gitIgnore
+дописываем в конце файла строки
+```
+# Don't ignore server launchSettings.json. We need a specific port number for auth to work.
+!**/BlazorNotificationTemplate.RealTimeApi/Properties/launchSettings.json
+```
 
 :white_check_mark: Запускаем проект, статус меняется на “Connected”, жмём старт и видим процесс обработки идущий на сервере
  
